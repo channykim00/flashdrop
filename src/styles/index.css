@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-appBlue-50:  #e6f4fc;
+  --color-appBlue-100: #c0e1fa;
+  --color-appBlue-200: #8acbfa;
+  --color-appBlue-300: #57b4f7;
+  --color-appBlue-400: #2d9dee;
+  --color-appBlue-500: #008ded;
+  --color-appBlue-600: #0078c2;
+  --color-appBlue-700: #005a89;
+  --color-appBlue-800: #004061;
+  --color-appBlue-900: #002a43;
+}
+
+.sidebar-link {
+  @apply flex items-center px-2 py-2 rounded-lg hover:bg-slate-200/50;
+}
