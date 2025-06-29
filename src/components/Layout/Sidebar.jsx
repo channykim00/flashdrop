@@ -13,11 +13,13 @@ const Sidebar = () => {
             <a
               href="#"
               className="flex items-center px-4 text-gray-100"
+              draggable="false"
             >
               <img
                 src={logo}
                 alt="Flash Drop Logo"
                 className="h-auto w-auto"
+                draggable="false"
               />
             </a>
           </div>

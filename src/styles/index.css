@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-appBlue-50:  #e6f4fc;
-  --color-appBlue-100: #c0e1fa;
-  --color-appBlue-200: #8acbfa;
-  --color-appBlue-300: #57b4f7;
-  --color-appBlue-400: #2d9dee;
-  --color-appBlue-500: #008ded;
-  --color-appBlue-600: #0078c2;
-  --color-appBlue-700: #005a89;
-  --color-appBlue-800: #004061;
-  --color-appBlue-900: #002a43;
+  --color-dodger-blue-50: #eff7ff;
+  --color-dodger-blue-100: #deefff;
+  --color-dodger-blue-200: #b6e0ff;
+  --color-dodger-blue-300: #75c9ff;
+  --color-dodger-blue-400: #2caeff;
+  --color-dodger-blue-500: #008ded;
+  --color-dodger-blue-600: #0074d4;
+  --color-dodger-blue-700: #005cab;
+  --color-dodger-blue-800: #004e8d;
+  --color-dodger-blue-900: #064274;
+  --color-dodger-blue-950: #04294d;
 }
 
 .sidebar-link {
-  @apply flex items-center px-2 py-2 rounded-lg hover:bg-slate-200/50;
+  @apply flex items-center rounded-lg px-2 py-2 hover:bg-slate-200/50;
 }
