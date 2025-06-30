@@ -21,10 +21,15 @@ const ReceiveFile = () => {
     setFolderPath,
     setLinkSettings,
     setSecuritySettings,
+    reset,
   } = useLinkStore();
 
   useEffect(() => {
     if (!folderPath) openFolderSelectDialog();
+
+    return () => {
+      reset();
+    };
   }, []);
 
   const openFolderSelectDialog = async () => {
