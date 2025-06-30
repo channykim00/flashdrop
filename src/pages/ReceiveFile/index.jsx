@@ -8,24 +8,23 @@ import LinkGenerator from "@/pages/ReceiveFile/LinkGenerator";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
 
+import useLinkStore from "@/stores/linkStore";
+
 const ReceiveFile = () => {
   const navigate = useNavigate();
-
-  const [folderPath, setFolderPath] = useState(null);
   const [error, setError] = useState(null);
-  const [linkSettings, setLinkSettings] = useState({
-    expireTime: "60",
-    allowedFileTypes: "all",
-    maxFileSize: "2GB",
-    autoAccept: false,
-  });
-  const [securitySettings, setSecuritySettings] = useState({
-    requireSenderName: false,
-    password: "",
-  });
+
+  const {
+    folderPath,
+    linkSettings,
+    securitySettings,
+    setFolderPath,
+    setLinkSettings,
+    setSecuritySettings,
+  } = useLinkStore();
 
   useEffect(() => {
-    openFolderSelectDialog();
+    if (!folderPath) openFolderSelectDialog();
   }, []);
 
   const openFolderSelectDialog = async () => {
@@ -86,6 +85,12 @@ const ReceiveFile = () => {
                   />
                 </div>
               </div>
+              <button
+                className="bg-dodger-blue-500 hover:bg-dodger-blue-600 w-full cursor-pointer rounded px-3 py-2 text-lg text-white"
+                onClick={() => navigate("/linkManagement")}
+              >
+                링크 생성
+              </button>
             </div>
           ) : (
             <Loading />

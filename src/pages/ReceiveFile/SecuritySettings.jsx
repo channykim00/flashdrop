@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { MdOutlineSecurity } from "react-icons/md";
+import useLinkStore from "@/stores/linkStore";
 
-const SecuritySettings = ({ settings, onChange }) => {
+const SecuritySettings = () => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const { securitySettings, setSecuritySettings } = useLinkStore();
+
   const handleChange = (field, value) => {
-    onChange({ ...settings, [field]: value });
+    setSecuritySettings({ ...securitySettings, [field]: value });
   };
 
   const handlePasswordToggle = () => {
@@ -26,7 +29,7 @@ const SecuritySettings = ({ settings, onChange }) => {
           <label className="w-32 text-sm font-medium text-gray-700">전송자 이름 받기</label>
           <input
             type="checkbox"
-            checked={settings.requireSenderName || false}
+            checked={securitySettings.requireSenderName || false}
             onChange={(e) => handleChange("requireSenderName", e.target.checked)}
             className="text-dodger-blue-500 focus:ring-dodger-blue-500 h-5 w-5 rounded border-gray-300"
           />
@@ -49,7 +52,7 @@ const SecuritySettings = ({ settings, onChange }) => {
             <input
               type="password"
               placeholder="비밀번호 입력"
-              value={settings.password || ""}
+              value={securitySettings.password || ""}
               onChange={(e) => handleChange("password", e.target.value)}
               className="ml-32 w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
             />

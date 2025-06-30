@@ -34,5 +34,4 @@ app.on("ready", () => {
     if (result.canceled) return null;
     return result.filePaths[0];
   });
-  console.log("select-folder handler registered");
 });

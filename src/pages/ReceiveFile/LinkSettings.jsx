@@ -1,8 +1,11 @@
 import { GiSettingsKnobs } from "react-icons/gi";
+import useLinkStore from "@/stores/linkStore";
 
-const LinkSettings = ({ settings, onChange }) => {
+const LinkSettings = () => {
+  const { linkSettings, setLinkSettings } = useLinkStore();
+
   const handleChange = (field, value) => {
-    onChange({ ...settings, [field]: value });
+    setLinkSettings({ ...linkSettings, [field]: value });
   };
 
   return (
@@ -15,7 +18,7 @@ const LinkSettings = ({ settings, onChange }) => {
           <label className="w-32 text-sm font-medium text-gray-700">만료 시간</label>
           <select
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
-            value={settings.expireTime || "60"}
+            value={linkSettings.expireTime || "60"}
             onChange={(e) => handleChange("expireTime", e.target.value)}
           >
             <option value="30">30분</option>
@@ -31,7 +34,7 @@ const LinkSettings = ({ settings, onChange }) => {
           <label className="w-32 text-sm font-medium text-gray-700">허용 파일 형식</label>
           <select
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
-            value={settings.allowedFileTypes || "all"}
+            value={linkSettings.allowedFileTypes || "all"}
             onChange={(e) => handleChange("allowedFileTypes", e.target.value)}
           >
             <option value="all">모든 형식</option>
@@ -51,7 +54,7 @@ const LinkSettings = ({ settings, onChange }) => {
           <label className="w-32 text-sm font-medium text-gray-700">최대 파일 크기</label>
           <select
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
-            value={settings.maxFileSize || "2GB"}
+            value={linkSettings.maxFileSize || "2GB"}
             onChange={(e) => handleChange("maxFileSize", e.target.value)}
           >
             <option value="10MB">10MB</option>
@@ -66,7 +69,7 @@ const LinkSettings = ({ settings, onChange }) => {
           <label className="w-32 text-sm font-medium text-gray-700">자동 수락</label>
           <input
             type="checkbox"
-            checked={settings.autoAccept || false}
+            checked={linkSettings.autoAccept || false}
             onChange={(e) => handleChange("autoAccept", e.target.checked)}
             className="text-dodger-blue-500 focus:ring-dodger-blue-500 h-5 w-5 rounded border-gray-300"
           />
