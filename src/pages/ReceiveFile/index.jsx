@@ -72,16 +72,20 @@ const ReceiveFile = () => {
                 folderPath={folderPath}
                 onChangePath={handleChangePath}
               />
-
-              <LinkSettings
-                settings={linkSettings}
-                onChange={setLinkSettings}
-              />
-
-              <SecuritySettings
-                settings={securitySettings}
-                onChange={setSecuritySettings}
-              />
+              <div className="mb-3 flex flex-col gap-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:flex-row">
+                <div className="w-full md:w-1/2">
+                  <LinkSettings
+                    settings={linkSettings}
+                    onChange={setLinkSettings}
+                  />
+                </div>
+                <div className="w-full md:w-1/2">
+                  <SecuritySettings
+                    settings={securitySettings}
+                    onChange={setSecuritySettings}
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <Loading />

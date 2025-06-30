@@ -6,7 +6,7 @@ const LinkSettings = ({ settings, onChange }) => {
   };
 
   return (
-    <div className="mb-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <>
       <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800">
         <GiSettingsKnobs /> 링크 설정
       </h3>
@@ -72,7 +72,7 @@ const LinkSettings = ({ settings, onChange }) => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
