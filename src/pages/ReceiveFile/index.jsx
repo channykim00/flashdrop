@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import ErrorModal from "@/components/ErrorModal";
 import Loading from "@/components/Loading";
 import FolderPathDisplay from "@/pages/ReceiveFile/FolderPathDisplay";
-import LinkGenerator from "@/pages/ReceiveFile/LinkGenerator";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
 
@@ -48,11 +47,6 @@ const ReceiveFile = () => {
   const handleChangePath = () => {
     openFolderSelectDialog();
   };
-
-  const handleCopyLink = () => {
-    console.log("링크가 복사되었습니다.");
-  };
-
   return (
     <>
       {error && (
@@ -68,8 +62,6 @@ const ReceiveFile = () => {
         <section className="mt-6">
           {folderPath ? (
             <div className="rounded-lg bg-white p-4 shadow">
-              <LinkGenerator onCopy={handleCopyLink} />
-
               <hr className="my-6 border-t border-gray-200" />
 
               <FolderPathDisplay
