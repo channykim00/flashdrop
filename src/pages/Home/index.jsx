@@ -1,13 +1,17 @@
 import { ImFolderDownload } from "react-icons/im";
 import { ImFolderUpload } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800">FlashDrop으로 파일 주고받기</h1>
 
       <section className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <button
+          onClick={() => navigate("/receiveFile")}
           type="button"
           className="flex cursor-pointer flex-col items-center rounded-xl bg-white p-4 shadow transition-all hover:shadow-md active:scale-95"
         >
