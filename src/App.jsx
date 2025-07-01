@@ -3,6 +3,7 @@ import MainLayout from "@/components/layout/MainLayout";
 
 import Home from "@/pages/Home";
 import LinkManagement from "@/pages/LinkManagement";
+import LinkDetail from "@/pages/LinkManagement/LinkDetail";
 import ReceiveFile from "@/pages/ReceiveFile";
 
 function App() {
@@ -21,6 +22,10 @@ function App() {
           <Route
             path="/linkManagement"
             element={<LinkManagement />}
+          />
+          <Route
+            path="/linkdetail/:uniqueUrl"
+            element={<LinkDetail />}
           />
         </Route>
       </Routes>

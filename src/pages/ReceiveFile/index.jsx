@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import ErrorModal from "@/components/ErrorModal";
 import Loading from "@/components/Loading";
+import SuccessModal from "@/components/SuccessModal";
 import FolderPathDisplay from "@/pages/ReceiveFile/FolderPathDisplay";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
@@ -15,6 +16,7 @@ import parseFileSize from "@/utils/parseFileSize";
 const ReceiveFile = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [successLinkUrl, setSuccessLinkUrl] = useState(null);
 
   const {
     folderPath,
@@ -81,6 +83,8 @@ const ReceiveFile = () => {
       const saveRes = await window.api.saveLinkData(linkToSave);
       if (!saveRes.success) {
         throw new Error("로컬 저장 실패: " + saveRes.error);
+      } else {
+        setSuccessLinkUrl(linkToSave.uniqueUrl);
       }
     } catch (err) {
       setError(err.message || "링크 생성 중 문제가 발생했습니다.");
@@ -94,6 +98,15 @@ const ReceiveFile = () => {
           errorTitle="폴더 선택 중 오류"
           errorMessage={error}
           onClose={() => setError(null)}
+        />
+      )}
+      {successLinkUrl && (
+        <SuccessModal
+          successTitle="링크가 생성되었습니다."
+          successMessage="링크가 정상적으로 생성되었습니다."
+          onClose={() => {
+            navigate(`/linkdetail/${successLinkUrl}`);
+          }}
         />
       )}
       <div>
