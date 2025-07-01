@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -39,5 +40,27 @@ app.on("ready", () => {
 
   ipcMain.handle("get-device-id", () => {
     return getOrCreateDeviceId();
+  });
+  ipcMain.handle("save-link-data", async (event, linkData) => {
+    try {
+      const userDataPath = app.getPath("userData");
+      const filePath = path.join(userDataPath, "links.json");
+
+      let existingLinks = [];
+
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, "utf-8");
+        existingLinks = JSON.parse(raw);
+      }
+
+      existingLinks.push(linkData);
+
+      fs.writeFileSync(filePath, JSON.stringify(existingLinks, null, 2), "utf-8");
+
+      return { success: true };
+    } catch (err) {
+      console.error("로컬 저장 실패:", err);
+      return { success: false, error: err.message };
+    }
   });
 });

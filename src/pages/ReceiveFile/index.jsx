@@ -77,7 +77,11 @@ const ReceiveFile = () => {
         throw new Error(data.message || "링크 생성 실패");
       }
 
-      console.log("링크 생성 성공:", data);
+      const linkToSave = data.link;
+      const saveRes = await window.api.saveLinkData(linkToSave);
+      if (!saveRes.success) {
+        throw new Error("로컬 저장 실패: " + saveRes.error);
+      }
     } catch (err) {
       setError(err.message || "링크 생성 중 문제가 발생했습니다.");
     }
