@@ -4,7 +4,7 @@ import useLinkStore from "@/stores/linkStore";
 
 const SecuritySettings = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const { securitySettings, setSecuritySettings } = useLinkStore();
 
   const handleChange = (field, value) => {
@@ -16,8 +16,11 @@ const SecuritySettings = () => {
     setShowPassword(newShowPassword);
     if (!newShowPassword) {
       handleChange("password", "");
+      setPasswordTouched(false);
     }
   };
+
+  const isPasswordValid = securitySettings.password?.length >= 4;
 
   return (
     <>
@@ -49,13 +52,29 @@ const SecuritySettings = () => {
             </button>
           </div>
           {showPassword && (
-            <input
-              type="password"
-              placeholder="비밀번호 입력"
-              value={securitySettings.password || ""}
-              onChange={(e) => handleChange("password", e.target.value)}
-              className="ml-32 w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-800"
-            />
+            <>
+              <input
+                type="password"
+                placeholder="비밀번호 입력"
+                value={securitySettings.password || ""}
+                onChange={(e) => {
+                  handleChange("password", e.target.value);
+                  setPasswordTouched(true);
+                }}
+                onBlur={() => setPasswordTouched(true)}
+                className={`ml-32 w-60 rounded border px-3 py-1 text-sm text-gray-800 ${
+                  passwordTouched && !isPasswordValid ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {passwordTouched && !isPasswordValid && (
+                <p className="mt-1 ml-32 text-sm text-red-600">
+                  비밀번호는 최소 4자리 이상이어야 합니다.
+                </p>
+              )}
+              {passwordTouched && isPasswordValid && (
+                <p className="mt-1 ml-32 text-sm text-green-600">비밀번호가 설정되었습니다.</p>
+              )}
+            </>
           )}
         </div>
       </div>

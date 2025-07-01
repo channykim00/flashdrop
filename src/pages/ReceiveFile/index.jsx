@@ -61,7 +61,7 @@ const ReceiveFile = () => {
         expireTime: linkSettings.expireTime,
         allowedFileTypes: linkSettings.allowedFileTypes,
         maxFileSize: parseFileSize(linkSettings.maxFileSize),
-        autoAccept: securitySettings.autoAccept,
+        autoAccept: linkSettings.autoAccept,
         requireSenderName: securitySettings.requireSenderName,
         password: securitySettings.password || null,
       };
