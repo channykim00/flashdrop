@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 
 import { isDev } from "../utils/isDev.js";
 
@@ -63,11 +63,23 @@ app.on("ready", () => {
       return { success: false, error: err.message };
     }
   });
+
   ipcMain.handle("get-link-by-url", async (event, uniqueUrl) => {
     const filePath = path.join(app.getPath("userData"), "links.json");
     if (!fs.existsSync(filePath)) return null;
 
     const all = JSON.parse(fs.readFileSync(filePath, "utf-8"));
     return all.find((link) => link.uniqueUrl === uniqueUrl) || null;
+  });
+
+  ipcMain.handle("open-folder", async (event, folderPath) => {
+    try {
+      const result = await shell.openPath(folderPath);
+      if (result) throw new Error(result);
+      return { success: true };
+    } catch (err) {
+      console.error("폴더 열기 실패:", err);
+      return { success: false, error: err.message };
+    }
   });
 });

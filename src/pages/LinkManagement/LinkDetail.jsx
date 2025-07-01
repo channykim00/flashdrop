@@ -109,7 +109,10 @@ const LinkDetail = () => {
                 {link.folderPath}
               </span>
               <span>
-                <button className="bg-dodger-blue-500 hover:bg-dodger-blue-600 focus:ring-dodger-blue-300 cursor-pointer rounded-md px-3 py-1 text-xs font-semibold text-white shadow-sm transition focus:ring-2 focus:outline-none">
+                <button
+                  className="bg-dodger-blue-500 hover:bg-dodger-blue-600 focus:ring-dodger-blue-300 cursor-pointer rounded-md px-3 py-1 text-xs font-semibold text-white shadow-sm transition focus:ring-2 focus:outline-none"
+                  onClick={() => window.api.openFolder(link.folderPath)}
+                >
                   폴더 열기
                 </button>
               </span>

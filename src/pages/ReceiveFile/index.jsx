@@ -119,6 +119,7 @@ const ReceiveFile = () => {
 
               <FolderPathDisplay
                 folderPath={folderPath}
+                onOpenFolder={() => window.api.openFolder(folderPath)}
                 onChangePath={handleChangePath}
               />
               <div className="mb-3 flex flex-col gap-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:flex-row">
