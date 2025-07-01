@@ -7,7 +7,10 @@ import FolderPathDisplay from "@/pages/ReceiveFile/FolderPathDisplay";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
 
+import useDeviceStore from "@/stores/deviceStore";
 import useLinkStore from "@/stores/linkStore";
+
+import parseFileSize from "@/utils/parseFileSize";
 
 const ReceiveFile = () => {
   const navigate = useNavigate();
@@ -47,6 +50,39 @@ const ReceiveFile = () => {
   const handleChangePath = () => {
     openFolderSelectDialog();
   };
+
+  const deviceId = useDeviceStore((state) => state.deviceId);
+
+  const handleCreateLink = async () => {
+    try {
+      const payload = {
+        deviceId,
+        folderPath,
+        expireTime: linkSettings.expireTime,
+        allowedFileTypes: linkSettings.allowedFileTypes,
+        maxFileSize: parseFileSize(linkSettings.maxFileSize),
+        autoAccept: securitySettings.autoAccept,
+        requireSenderName: securitySettings.requireSenderName,
+        password: securitySettings.password || null,
+      };
+
+      const res = await fetch("http://localhost:4000/api/links", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "링크 생성 실패");
+      }
+
+      console.log("링크 생성 성공:", data);
+    } catch (err) {
+      setError(err.message || "링크 생성 중 문제가 발생했습니다.");
+    }
+  };
+
   return (
     <>
       {error && (
@@ -84,7 +120,7 @@ const ReceiveFile = () => {
               </div>
               <button
                 className="bg-dodger-blue-500 hover:bg-dodger-blue-600 w-full cursor-pointer rounded px-3 py-2 text-lg text-white"
-                onClick={() => navigate("/linkManagement")}
+                onClick={handleCreateLink}
               >
                 링크 생성
               </button>
