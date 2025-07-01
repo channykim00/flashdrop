@@ -5,6 +5,8 @@ import { app, BrowserWindow, ipcMain, dialog } from "electron";
 
 import { isDev } from "../utils/isDev.js";
 
+import { getOrCreateDeviceId } from "./deviceId.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -33,5 +35,9 @@ app.on("ready", () => {
 
     if (result.canceled) return null;
     return result.filePaths[0];
+  });
+
+  ipcMain.handle("get-device-id", () => {
+    return getOrCreateDeviceId();
   });
 });

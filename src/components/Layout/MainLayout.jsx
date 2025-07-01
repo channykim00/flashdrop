@@ -1,8 +1,18 @@
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import useDeviceStore from "@/stores/deviceStore";
 
 const MainLayout = () => {
+  const setDeviceId = useDeviceStore((state) => state.setDeviceId);
+
+  useEffect(() => {
+    window.api.getDeviceId().then((id) => {
+      setDeviceId(id);
+    });
+  }, []);
+
   return (
     <div className="flex h-screen">
       <Sidebar />
