@@ -63,4 +63,11 @@ app.on("ready", () => {
       return { success: false, error: err.message };
     }
   });
+  ipcMain.handle("get-link-by-url", async (event, uniqueUrl) => {
+    const filePath = path.join(app.getPath("userData"), "links.json");
+    if (!fs.existsSync(filePath)) return null;
+
+    const all = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    return all.find((link) => link.uniqueUrl === uniqueUrl) || null;
+  });
 });
