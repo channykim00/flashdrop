@@ -6,6 +6,7 @@ import { FaFolderOpen } from "react-icons/fa6";
 import { IoTimeSharp } from "react-icons/io5";
 import { MdOutlineStorage } from "react-icons/md";
 import { MdAutorenew } from "react-icons/md";
+import { PiSubtitlesFill } from "react-icons/pi";
 import { RiCloseLargeLine } from "react-icons/ri";
 
 import { useParams } from "react-router-dom";
@@ -102,6 +103,11 @@ const LinkDetail = () => {
           <hr className="my-6 border-t border-gray-300" />
 
           <div className="space-y-2 text-sm text-gray-700">
+            <div className="mb-5 flex items-center gap-2">
+              <PiSubtitlesFill className="text-dodger-blue-500 text-lg" />
+              <span className="w-32 font-medium">링크 제목</span>
+              <span>{link.title}</span>
+            </div>
             <div className="mb-5 flex items-center gap-2">
               <FaFolderOpen className="text-dodger-blue-500 text-lg" />
               <span className="w-32 font-medium">폴더 경로</span>

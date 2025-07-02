@@ -61,6 +61,7 @@ const ReceiveFile = () => {
       const payload = {
         deviceId,
         folderPath,
+        title: linkSettings.title,
         expireTime: linkSettings.expireTime,
         allowedFileTypes: linkSettings.allowedFileTypes,
         maxFileSize: parseFileSize(linkSettings.maxFileSize),

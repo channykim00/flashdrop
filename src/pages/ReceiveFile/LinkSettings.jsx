@@ -15,6 +15,16 @@ const LinkSettings = () => {
       </h3>
       <div className="space-y-4">
         <div className="flex items-center gap-4">
+          <label className="w-32 text-sm font-medium text-gray-700">링크 제목</label>
+          <input
+            type="text"
+            placeholder="예: 프로젝트 제출 링크"
+            value={linkSettings.title || ""}
+            onChange={(e) => handleChange("title", e.target.value)}
+            className="focus:ring-dodger-blue-300 w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 focus:ring-2 focus:outline-none"
+          />
+        </div>
+        <div className="flex items-center gap-4">
           <label className="w-32 text-sm font-medium text-gray-700">만료 시간</label>
           <select
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
