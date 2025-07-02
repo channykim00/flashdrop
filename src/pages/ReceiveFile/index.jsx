@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorModal from "@/components/ErrorModal";
 import Loading from "@/components/Loading";
 import SuccessModal from "@/components/SuccessModal";
+import { API_URL } from "@/constants";
 import FolderPathDisplay from "@/pages/ReceiveFile/FolderPathDisplay";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
@@ -68,7 +69,7 @@ const ReceiveFile = () => {
         password: securitySettings.password || null,
       };
 
-      const res = await fetch("http://localhost:4000/api/links", {
+      const res = await fetch(`${API_URL}/api/links`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

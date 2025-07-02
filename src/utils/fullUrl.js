@@ -1,3 +1,4 @@
+import { CLIENT_URL } from "@/constants";
 export default function fullUrl(uniqueUrl) {
-  return `http://임시주소/${uniqueUrl}`;
+  return `${CLIENT_URL}/${uniqueUrl}`;
 }
