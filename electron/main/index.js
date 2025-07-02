@@ -82,4 +82,22 @@ app.on("ready", () => {
       return { success: false, error: err.message };
     }
   });
+
+  ipcMain.handle("save-file", async (event, { fileName, fileData, folderPath }) => {
+    try {
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+      }
+
+      const filePath = path.join(folderPath, fileName);
+      const buffer = Buffer.from(fileData);
+
+      await fs.promises.writeFile(filePath, buffer);
+
+      return { success: true };
+    } catch (err) {
+      console.error("파일 저장 실패:", err);
+      throw err;
+    }
+  });
 });
