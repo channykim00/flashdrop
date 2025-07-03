@@ -36,12 +36,6 @@ const Sidebar = () => {
                 href="#"
                 className="sidebar-link"
               >
-                <RiFolderUploadFill className="mr-3 text-xl" /> 보낸 파일 목록
-              </a>
-              <a
-                href="#"
-                className="sidebar-link"
-              >
                 <TbBinaryTree2 className="mr-3 text-xl" /> 링크 관리
               </a>
             </div>

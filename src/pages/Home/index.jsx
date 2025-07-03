@@ -1,5 +1,4 @@
 import { ImFolderDownload } from "react-icons/im";
-import { ImFolderUpload } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -16,15 +15,7 @@ const Home = () => {
           className="flex cursor-pointer flex-col items-center rounded-xl bg-white p-4 shadow transition-all hover:shadow-md active:scale-95"
         >
           <ImFolderDownload className="text-dodger-blue-500 h-30 w-30" />
-          <p className="mt-3 text-2xl text-gray-500">파일 받기 준비</p>
-        </button>
-
-        <button
-          type="button"
-          className="flex cursor-pointer flex-col items-center rounded-xl bg-white p-4 shadow transition-all hover:shadow-md active:scale-95"
-        >
-          <ImFolderUpload className="text-dodger-blue-500 h-30 w-30" />
-          <p className="mt-3 text-2xl text-gray-500">파일 보내기</p>
+          <p className="mt-3 text-2xl text-gray-500">파일 받기 링크 생성</p>
         </button>
       </section>
     </div>
