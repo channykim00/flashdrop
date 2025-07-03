@@ -30,20 +30,16 @@ const ReceiveFile = () => {
   } = useLinkStore();
 
   useEffect(() => {
-    if (!folderPath) openFolderSelectDialog();
-
     return () => {
       reset();
     };
-  }, []);
+  }, [reset]);
 
   const openFolderSelectDialog = async () => {
     try {
       const path = await window.api.selectFolder();
       if (path) {
         setFolderPath(path);
-      } else {
-        navigate(-1);
       }
     } catch (err) {
       setError(err.message || "폴더를 여는 중 문제가 발생했습니다.");
@@ -115,10 +111,18 @@ const ReceiveFile = () => {
         <h1 className="text-2xl font-bold text-gray-800">파일 받기 링크 생성</h1>
 
         <section className="mt-6">
-          {folderPath ? (
+          {!folderPath ? (
+            <div className="rounded-lg bg-white p-6 text-center shadow">
+              <p className="mb-4 text-gray-700">파일을 저장할 폴더를 먼저 선택해주세요.</p>
+              <button
+                className="bg-dodger-blue-500 hover:bg-dodger-blue-600 cursor-pointer rounded px-4 py-2 text-white"
+                onClick={openFolderSelectDialog}
+              >
+                저장할 폴더 선택하기
+              </button>
+            </div>
+          ) : (
             <div className="rounded-lg bg-white p-4 shadow">
-              <hr className="my-6 border-t border-gray-200" />
-
               <FolderPathDisplay
                 folderPath={folderPath}
                 onOpenFolder={() => window.api.openFolder(folderPath)}
@@ -145,8 +149,6 @@ const ReceiveFile = () => {
                 링크 생성
               </button>
             </div>
-          ) : (
-            <Loading />
           )}
         </section>
       </div>
