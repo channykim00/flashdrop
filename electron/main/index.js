@@ -3,10 +3,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
+import { io } from "socket.io-client";
 
+import { API_URL, DEV_SERVER_URL } from "../../src/constants.js";
 import { isDev } from "../utils/isDev.js";
 
 import { getOrCreateDeviceId } from "./deviceId.js";
+import { handleChunkReceive } from "./handlers/fileReceiver.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,8 +26,23 @@ app.on("ready", () => {
     },
   });
 
+  const socket = io(API_URL);
+
+  socket.on("connect", () => {
+    const deviceId = getOrCreateDeviceId();
+    socket.emit("register-device", deviceId);
+  });
+
+  socket.on("connect_error", (err) => {
+    console.error("소켓 연결 오류:", err.message);
+  });
+
+  socket.on("receive-chunk", (data) => {
+    handleChunkReceive(data);
+  });
+
   if (isDev()) {
-    mainWindow.loadURL("http://localhost:5123");
+    mainWindow.loadURL(DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), "/dist/index.html"));
   }
