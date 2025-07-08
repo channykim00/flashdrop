@@ -3,9 +3,21 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import useDeviceStore from "@/stores/deviceStore";
+import useUploadRequestStore from "@/stores/useUploadRequestStore";
 
 const MainLayout = () => {
   const setDeviceId = useDeviceStore((state) => state.setDeviceId);
+
+  const addRequest = useUploadRequestStore((state) => state.addRequest);
+  const getLocalRequests = useUploadRequestStore((state) => state.getLocalRequests);
+
+  useEffect(() => {
+    getLocalRequests();
+
+    window.api.onShowUploadAccept((event, data) => {
+      addRequest(data);
+    });
+  }, [addRequest, getLocalRequests]);
 
   useEffect(() => {
     window.api.getDeviceId().then((id) => {

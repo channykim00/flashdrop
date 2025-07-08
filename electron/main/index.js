@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
+import Store from "electron-store";
 import { io } from "socket.io-client";
 
 import { API_URL, DEV_SERVER_URL } from "../../src/constants.js";
@@ -10,6 +11,8 @@ import { isDev } from "../utils/isDev.js";
 
 import { getOrCreateDeviceId } from "./deviceId.js";
 import { handleChunkReceive } from "./handlers/fileReceiver.js";
+
+const store = new Store();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +42,25 @@ app.on("ready", () => {
 
   socket.on("receive-chunk", (data) => {
     handleChunkReceive(data);
+  });
+
+  socket.on("request-upload-accept", async (data) => {
+    const requests = store.get("uploadRequests") || [];
+    requests.push(data);
+    store.set("uploadRequests", requests);
+
+    mainWindow.webContents.send("show-upload-accept", data);
+  });
+  ipcMain.on("accept-upload", (event, { uploadData }) => {
+    socket.emit("accept-upload", { uploadData });
+  });
+
+  ipcMain.handle("get-upload-requests", () => {
+    const requests = store.get("uploadRequests") || [];
+    return requests;
+  });
+  ipcMain.handle("set-upload-requests", (event, requests) => {
+    store.set("uploadRequests", requests);
   });
 
   if (isDev()) {
