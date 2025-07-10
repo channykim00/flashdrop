@@ -5,6 +5,7 @@ import ErrorModal from "@/components/ErrorModal";
 import Loading from "@/components/Loading";
 import SuccessModal from "@/components/SuccessModal";
 import { API_URL } from "@/constants";
+import { FILE_TYPE_OPTIONS } from "@/constants";
 import FolderPathDisplay from "@/pages/ReceiveFile/FolderPathDisplay";
 import LinkSettings from "@/pages/ReceiveFile/LinkSettings";
 import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
@@ -54,12 +55,16 @@ const ReceiveFile = () => {
 
   const handleCreateLink = async () => {
     try {
+      const selectedGroup = linkSettings.allowedFileTypes;
+      const matchedOption = FILE_TYPE_OPTIONS.find((option) => option.value === selectedGroup);
+      const allowedExtensions = matchedOption ? matchedOption.extensions : [];
+
       const payload = {
         deviceId,
         folderPath,
         title: linkSettings.title,
         expireTime: linkSettings.expireTime,
-        allowedFileTypes: linkSettings.allowedFileTypes,
+        allowedFileTypes: allowedExtensions,
         maxFileSize: parseFileSize(linkSettings.maxFileSize),
         autoAccept: linkSettings.autoAccept,
         requireSenderName: securitySettings.requireSenderName,

@@ -1,4 +1,5 @@
 import { GiSettingsKnobs } from "react-icons/gi";
+import { FILE_TYPE_OPTIONS } from "@/constants";
 import useLinkStore from "@/stores/linkStore";
 
 const LinkSettings = () => {
@@ -43,20 +44,18 @@ const LinkSettings = () => {
         <div className="flex items-center gap-4">
           <label className="w-32 text-sm font-medium text-gray-700">허용 파일 형식</label>
           <select
-            className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
             value={linkSettings.allowedFileTypes || "all"}
             onChange={(e) => handleChange("allowedFileTypes", e.target.value)}
+            className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
           >
-            <option value="all">모든 형식</option>
-            <option value="image">이미지 (JPG, PNG, GIF, BMP, WEBP)</option>
-            <option value="pdf">PDF</option>
-            <option value="doc">문서 (DOC, DOCX, TXT, RTF)</option>
-            <option value="spreadsheet">스프레드시트 (XLS, XLSX, CSV)</option>
-            <option value="presentation">프레젠테이션 (PPT, PPTX)</option>
-            <option value="video">영상 (MP4, MOV, AVI, MKV)</option>
-            <option value="audio">음성 (MP3, WAV, M4A)</option>
-            <option value="archive">압축 파일 (ZIP, RAR, 7Z)</option>
-            <option value="code">코드 파일 (JS, HTML, CSS, JSON)</option>
+            {FILE_TYPE_OPTIONS.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
 
