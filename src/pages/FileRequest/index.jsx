@@ -1,5 +1,6 @@
 import { BsInboxesFill } from "react-icons/bs";
 import useUploadRequestStore from "@/stores/useUploadRequestStore";
+import dateFormat from "@/utils/dateFormat";
 import formatFileSize from "@/utils/formatFileSize";
 
 const FileRequest = () => {
@@ -24,11 +25,12 @@ const FileRequest = () => {
             <table className="min-w-full text-left text-sm text-gray-700">
               <thead className="bg-gray-100 text-xs tracking-wider text-gray-500 uppercase">
                 <tr className="text-center">
-                  <th className="px-6 py-4">파일명</th>
-                  <th className="px-6 py-4">용량</th>
-                  <th className="px-6 py-4">연결된 링크</th>
-                  <th className="px-6 py-4">업로드 시간</th>
-                  <th className="px-6 py-4">작업</th>
+                  <th className="px-3 py-3">보낸이</th>
+                  <th className="px-3 py-3">파일명</th>
+                  <th className="px-3 py-3">용량</th>
+                  <th className="px-3 py-3">연결된 링크</th>
+                  <th className="px-3 py-3">업로드 시간</th>
+                  <th className="px-3 py-3">작업</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-center">
@@ -37,20 +39,31 @@ const FileRequest = () => {
                     className="hover:bg-gray-50"
                     key={requests.fileId}
                   >
-                    <td className="px-6 py-4 font-medium text-gray-900">{requests.filename}</td>
-                    <td className="px-6 py-4">{formatFileSize(requests.size)}</td>
-                    <td className="px-6 py-4">백엔드 개인 과제</td>
-                    <td className="px-6 py-4">2025.07.07 18:50</td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-4 text-xs">
+                      {requests.senderName ? (
+                        <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
+                          {requests.senderName}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset">
+                          없음
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-2 py-4 font-medium text-gray-900">{requests.filename}</td>
+                    <td className="px-2 py-4 text-xs">{formatFileSize(requests.size)}</td>
+                    <td className="px-2 py-4 text-xs">{requests.title}</td>
+                    <td className="px-2 py-4 text-xs">{dateFormat(requests.startedAt)}</td>
+                    <td className="px-2 py-4">
                       <div className="flex justify-end gap-2">
                         <button
-                          className="cursor-pointer rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 transition hover:bg-gray-100"
+                          className="cursor-pointer rounded-lg border border-gray-300 px-3 py-1 text-xs text-gray-600 transition hover:bg-gray-100"
                           onClick={() => handleDeclineFile(requests)}
                         >
                           거절
                         </button>
                         <button
-                          className="bg-dodger-blue-500 hover:bg-dodger-blue-600 cursor-pointer rounded-lg px-3 py-1 text-sm font-semibold text-white shadow transition"
+                          className="bg-dodger-blue-500 hover:bg-dodger-blue-600 cursor-pointer rounded-lg px-3 py-1 text-xs font-semibold text-white shadow transition"
                           onClick={() => handleAcceptFile(requests)}
                         >
                           수락
