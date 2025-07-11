@@ -3,16 +3,14 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
-import Store from "electron-store";
 import { io } from "socket.io-client";
 
 import { API_URL, DEV_SERVER_URL } from "../../src/constants.js";
 import { isDev } from "../utils/isDev.js";
+import uploadRequestStore from "../utils/uploadRequestStore.js";
 
 import { getOrCreateDeviceId } from "./deviceId.js";
 import { handleChunkReceive } from "./handlers/fileReceiver.js";
-
-const store = new Store();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,9 +48,9 @@ app.on("ready", () => {
       socket.emit("accept-upload", { uploadData: data });
       return;
     }
-    const requests = store.get("uploadRequests") || [];
+    const requests = uploadRequestStore.get("uploadRequests") || [];
     requests.push(data);
-    store.set("uploadRequests", requests);
+    uploadRequestStore.set("uploadRequests", requests);
 
     mainWindow.webContents.send("show-upload-accept", data);
   });
@@ -61,11 +59,10 @@ app.on("ready", () => {
   });
 
   ipcMain.handle("get-upload-requests", () => {
-    const requests = store.get("uploadRequests") || [];
-    return requests;
+    return uploadRequestStore.get("uploadRequests") || [];
   });
   ipcMain.handle("set-upload-requests", (event, requests) => {
-    store.set("uploadRequests", requests);
+    uploadRequestStore.set("uploadRequests", requests);
   });
 
   if (isDev()) {
