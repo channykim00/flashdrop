@@ -32,8 +32,11 @@ const Sidebar = () => {
 
           <div className="flex flex-1 flex-col justify-between text-sm">
             <div className="mt-2 flex flex-col gap-3">
-              <button className="sidebar-link cursor-pointer">
-                <RiFolderDownloadFill className="mr-3 text-xl" /> 받은 파일 목록
+              <button
+                className="sidebar-link cursor-pointer"
+                onClick={() => navigate("/fileHistory")}
+              >
+                <RiFolderDownloadFill className="mr-3 text-xl" /> 받은 파일 기록
               </button>
               <button className="sidebar-link cursor-pointer">
                 <TbBinaryTree2 className="mr-3 text-xl" /> 링크 관리

@@ -6,6 +6,7 @@ import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 import { io } from "socket.io-client";
 
 import { API_URL, DEV_SERVER_URL } from "../../src/constants.js";
+import downloadStore from "../utils/downloadStore.js";
 import { isDev } from "../utils/isDev.js";
 import uploadRequestStore from "../utils/uploadRequestStore.js";
 
@@ -141,5 +142,18 @@ app.on("ready", () => {
       console.error("파일 저장 실패:", err);
       throw err;
     }
+  });
+
+  ipcMain.handle("get-download-history", () => {
+    const history = downloadStore.get("downloadedFiles") || [];
+    return history;
+  });
+  ipcMain.handle("delete-download-history", (event, fileId) => {
+    const files = downloadStore.get("downloadedFiles") || [];
+
+    const updated = files.filter((f) => f.fileId !== fileId);
+    downloadStore.set("downloadedFiles", updated);
+
+    return true;
   });
 });

@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
-import Store from "electron-store";
 
-const store = new Store();
+import store from "../utils/store.js";
 
 contextBridge.exposeInMainWorld("api", {
   selectFolder: () => ipcRenderer.invoke("select-folder"),
@@ -9,6 +8,9 @@ contextBridge.exposeInMainWorld("api", {
   saveLinkData: (linkData) => ipcRenderer.invoke("save-link-data", linkData),
   getLinkByUniqueUrl: (uniqueUrl) => ipcRenderer.invoke("get-link-by-url", uniqueUrl),
   openFolder: (path) => ipcRenderer.invoke("open-folder", path),
+
+  getDownloadHistory: () => ipcRenderer.invoke("get-download-history"),
+  deleteDownloadHistory: (fileId) => ipcRenderer.invoke("delete-download-history", fileId),
 
   onAutoAcceptUpload: (callback) => ipcRenderer.on("auto-accept-upload", callback),
   onShowUploadAccept: (callback) => ipcRenderer.on("show-upload-accept", callback),

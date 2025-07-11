@@ -1,6 +1,7 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 
+import FileHistory from "@/pages/FileHistory";
 import FileRequest from "@/pages/FileRequest";
 import Home from "@/pages/Home";
 import LinkManagement from "@/pages/LinkManagement";
@@ -27,6 +28,10 @@ function App() {
           <Route
             path="/linkdetail/:uniqueUrl"
             element={<LinkDetail />}
+          />
+          <Route
+            path="/fileHistory"
+            element={<FileHistory />}
           />
           <Route
             path="/fileRequest"
