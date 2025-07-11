@@ -45,6 +45,11 @@ app.on("ready", () => {
   });
 
   socket.on("request-upload-accept", async (data) => {
+    if (data.autoAccept === true) {
+      mainWindow.webContents.send("auto-accept-upload", data);
+      socket.emit("accept-upload", { uploadData: data });
+      return;
+    }
     const requests = store.get("uploadRequests") || [];
     requests.push(data);
     store.set("uploadRequests", requests);

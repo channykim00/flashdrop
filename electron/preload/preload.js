@@ -9,8 +9,8 @@ contextBridge.exposeInMainWorld("api", {
   saveLinkData: (linkData) => ipcRenderer.invoke("save-link-data", linkData),
   getLinkByUniqueUrl: (uniqueUrl) => ipcRenderer.invoke("get-link-by-url", uniqueUrl),
   openFolder: (path) => ipcRenderer.invoke("open-folder", path),
-  saveFile: (data) => ipcRenderer.invoke("save-file", data),
 
+  onAutoAcceptUpload: (callback) => ipcRenderer.on("auto-accept-upload", callback),
   onShowUploadAccept: (callback) => ipcRenderer.on("show-upload-accept", callback),
   sendAcceptedUpload: (uploadData) => ipcRenderer.send("accept-upload", { uploadData }),
 

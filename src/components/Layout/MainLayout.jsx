@@ -1,11 +1,13 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import useDeviceStore from "@/stores/deviceStore";
 import useUploadRequestStore from "@/stores/useUploadRequestStore";
+import showNotification from "@/utils/showNotification.js";
 
 const MainLayout = () => {
+  const navigate = useNavigate();
   const setDeviceId = useDeviceStore((state) => state.setDeviceId);
 
   const addRequest = useUploadRequestStore((state) => state.addRequest);
@@ -15,9 +17,18 @@ const MainLayout = () => {
     getLocalRequests();
 
     window.api.onShowUploadAccept((event, data) => {
+      showNotification("FlashDrop 알림", "새로운 파일이 도착했습니다.", () => {
+        navigate("/fileRequest");
+      });
       addRequest(data);
     });
-  }, [addRequest, getLocalRequests]);
+    window.api.onAutoAcceptUpload((event, data) => {
+      console.log("electron data: ", data);
+      showNotification("다운로드 진행중", `${data.filename}을 다운로드 중입니다.`, () => {
+        navigate("/fileRequest");
+      });
+    });
+  }, [addRequest, getLocalRequests, navigate]);
 
   useEffect(() => {
     window.api.getDeviceId().then((id) => {
