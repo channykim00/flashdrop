@@ -44,8 +44,8 @@ const LinkSettings = () => {
         <div className="flex items-center gap-4">
           <label className="w-32 text-sm font-medium text-gray-700">허용 파일 형식</label>
           <select
-            value={linkSettings.allowedFileTypes || "all"}
-            onChange={(e) => handleChange("allowedFileTypes", e.target.value)}
+            value={linkSettings.allowedFileTypeGroup || "all"}
+            onChange={(e) => handleChange("allowedFileTypeGroup", e.target.value)}
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
           >
             {FILE_TYPE_OPTIONS.map((option) => (
@@ -63,14 +63,14 @@ const LinkSettings = () => {
           <label className="w-32 text-sm font-medium text-gray-700">최대 파일 크기</label>
           <select
             className="w-60 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
-            value={linkSettings.maxFileSize || "2GB"}
-            onChange={(e) => handleChange("maxFileSize", e.target.value)}
+            value={linkSettings.maxFileSize}
+            onChange={(e) => handleChange("maxFileSize", Number(e.target.value))}
           >
-            <option value="10MB">10MB</option>
-            <option value="100MB">100MB</option>
-            <option value="500MB">500MB</option>
-            <option value="1GB">1GB</option>
-            <option value="2GB">2GB</option>
+            <option value={10 * 1024 * 1024}>10MB</option>
+            <option value={100 * 1024 * 1024}>100MB</option>
+            <option value={500 * 1024 * 1024}>500MB</option>
+            <option value={1 * 1024 * 1024 * 1024}>1GB</option>
+            <option value={2 * 1024 * 1024 * 1024}>2GB</option>
           </select>
         </div>
 

@@ -13,8 +13,6 @@ import SecuritySettings from "@/pages/ReceiveFile/SecuritySettings";
 import useDeviceStore from "@/stores/deviceStore";
 import useLinkStore from "@/stores/linkStore";
 
-import parseFileSize from "@/utils/parseFileSize";
-
 const ReceiveFile = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -56,16 +54,14 @@ const ReceiveFile = () => {
   const handleCreateLink = async () => {
     try {
       const selectedGroup = linkSettings.allowedFileTypes;
-      const matchedOption = FILE_TYPE_OPTIONS.find((option) => option.value === selectedGroup);
-      const allowedExtensions = matchedOption ? matchedOption.extensions : [];
 
       const payload = {
         deviceId,
         folderPath,
         title: linkSettings.title,
         expireTime: linkSettings.expireTime,
-        allowedFileTypes: allowedExtensions,
-        maxFileSize: parseFileSize(linkSettings.maxFileSize),
+        allowedFileTypeGroup: selectedGroup,
+        maxFileSize: linkSettings.maxFileSize,
         autoAccept: linkSettings.autoAccept,
         requireSenderName: securitySettings.requireSenderName,
         password: securitySettings.password || null,

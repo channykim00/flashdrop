@@ -38,7 +38,10 @@ const Sidebar = () => {
               >
                 <RiFolderDownloadFill className="mr-3 text-xl" /> 받은 파일 기록
               </button>
-              <button className="sidebar-link cursor-pointer">
+              <button
+                className="sidebar-link cursor-pointer"
+                onClick={() => navigate("/linkManagement")}
+              >
                 <TbBinaryTree2 className="mr-3 text-xl" /> 링크 관리
               </button>
               <button

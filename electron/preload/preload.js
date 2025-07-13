@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld("api", {
   selectFolder: () => ipcRenderer.invoke("select-folder"),
   getDeviceId: () => ipcRenderer.invoke("get-device-id"),
   saveLinkData: (linkData) => ipcRenderer.invoke("save-link-data", linkData),
+  updateLinkData: (linkData) => ipcRenderer.invoke("update-link-data", linkData),
+  deleteLinkData: (uniqueUrl) => ipcRenderer.invoke("delete-link-data", uniqueUrl),
   getLinkByUniqueUrl: (uniqueUrl) => ipcRenderer.invoke("get-link-by-url", uniqueUrl),
   openFolder: (path) => ipcRenderer.invoke("open-folder", path),
 

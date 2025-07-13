@@ -3,8 +3,8 @@ import { create } from "zustand";
 const defaultLinkSettings = {
   title: "Untitled",
   expireTime: "60",
-  allowedFileTypes: "all",
-  maxFileSize: "2GB",
+  allowedFileTypeGroup: "all",
+  maxFileSize: 2 * 1024 * 1024 * 1024,
   autoAccept: false,
 };
 

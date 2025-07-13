@@ -8,6 +8,7 @@ import { io } from "socket.io-client";
 import { API_URL, DEV_SERVER_URL } from "../../src/constants.js";
 import downloadStore from "../utils/downloadStore.js";
 import { isDev } from "../utils/isDev.js";
+import linkStore from "../utils/linkStore.js";
 import uploadRequestStore from "../utils/uploadRequestStore.js";
 
 import { getOrCreateDeviceId } from "./deviceId.js";
@@ -86,32 +87,66 @@ app.on("ready", () => {
   });
   ipcMain.handle("save-link-data", async (event, linkData) => {
     try {
-      const userDataPath = app.getPath("userData");
-      const filePath = path.join(userDataPath, "links.json");
-
-      let existingLinks = [];
-
-      if (fs.existsSync(filePath)) {
-        const raw = fs.readFileSync(filePath, "utf-8");
-        existingLinks = JSON.parse(raw);
-      }
-
+      const existingLinks = linkStore.get("list") || [];
       existingLinks.push(linkData);
-
-      fs.writeFileSync(filePath, JSON.stringify(existingLinks, null, 2), "utf-8");
-
+      linkStore.set("list", existingLinks);
       return { success: true };
     } catch (err) {
-      console.error("로컬 저장 실패:", err);
+      console.error("링크 저장 실패:", err);
       return { success: false, error: err.message };
     }
   });
 
-  ipcMain.handle("get-link-by-url", async (event, uniqueUrl) => {
-    const filePath = path.join(app.getPath("userData"), "links.json");
-    if (!fs.existsSync(filePath)) return null;
+  ipcMain.handle("update-link-data", async (event, linkData) => {
+    try {
+      const existingLinks = linkStore.get("list") || [];
+      const hasMatch = existingLinks.some((link) => link.uniqueUrl === linkData.uniqueUrl);
 
-    const all = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+      if (!hasMatch) {
+        throw new Error("해당 링크가 존재하지 않습니다.");
+      }
+
+      const updatedLinks = existingLinks.map((link) =>
+        link.uniqueUrl === linkData.uniqueUrl ? linkData : link,
+      );
+
+      linkStore.set("list", updatedLinks);
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle("delete-link-data", async (event, uniqueUrl) => {
+    try {
+      const existingLinks = linkStore.get("list") || [];
+      const updatedLinks = existingLinks.filter((link) => link.uniqueUrl !== uniqueUrl);
+
+      if (updatedLinks.length === existingLinks.length) {
+        throw new Error("해당 링크가 존재하지 않습니다.");
+      }
+
+      linkStore.set("list", updatedLinks);
+      return { success: true };
+    } catch (err) {
+      console.error("링크 삭제 실패:", err);
+      return { success: false, error: err.message };
+    }
+  });
+
+  ipcMain.handle("get-link-list", () => {
+    return linkStore.get("list") || [];
+  });
+
+  ipcMain.handle("delete-link-by-url", (event, uniqueUrl) => {
+    const all = linkStore.get("list") || [];
+    const updated = all.filter((link) => link.uniqueUrl !== uniqueUrl);
+    linkStore.set("list", updated);
+    return { success: true };
+  });
+
+  ipcMain.handle("get-link-by-url", (event, uniqueUrl) => {
+    const all = linkStore.get("list") || [];
     return all.find((link) => link.uniqueUrl === uniqueUrl) || null;
   });
 

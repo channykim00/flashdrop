@@ -1,29 +1,275 @@
-import useLinkStore from "@/stores/linkStore";
+import { useState, useEffect } from "react";
+import { FaFolderOpen } from "react-icons/fa";
+import { FaFile } from "react-icons/fa";
+import { FaLink } from "react-icons/fa6";
+import { FaFloppyDisk } from "react-icons/fa6";
+import { IoIosPerson } from "react-icons/io";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { MdOutlineTimelapse, MdSubtitles } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { TbBinaryTree2 } from "react-icons/tb";
+import { CLIENT_URL } from "../../constants";
+import { API_URL } from "../../constants";
+import DeletePrompt from "@/components/DeletePrompt";
+import SuccessModal from "@/components/SuccessModal";
+import { FILE_TYPE_OPTIONS } from "@/constants";
+import EditLinkModal from "@/pages/LinkManagement/EditLinkModal";
+import formatFileSize from "@/utils/formatFileSize";
+import remainTimeFormat from "@/utils/remainTimeFormat";
 
 const LinkManagement = () => {
-  const { folderPath, linkSettings, securitySettings } = useLinkStore();
+  const [links, setLinks] = useState([]);
+  const [openId, setOpenId] = useState(null);
+  const [editingLink, setEditingLink] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [successTitle, setSuccessTitle] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  useEffect(() => {
+    window.api.getLinkList().then((loadedLinks) => {
+      setLinks(loadedLinks || []);
+    });
+  }, []);
+
+  const handleEditLink = (link) => {
+    setEditingLink(link);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteLink = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/links/${deleteTarget.uniqueUrl}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.message || "삭제 실패");
+
+      await window.api.deleteLinkData(deleteTarget.uniqueUrl);
+
+      setLinks((prev) => prev.filter((link) => link.uniqueUrl !== deleteTarget.uniqueUrl));
+
+      setDeleteTarget(null);
+      setSuccessTitle("삭제 완료!");
+      setSuccessMessage("링크가 성공적으로 삭제되었습니다.");
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error(error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleSaveLink = async (updatedLink) => {
+    try {
+      const response = await fetch(`${API_URL}/api/links/${updatedLink.uniqueUrl}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedLink),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "업데이트 실패");
+      }
+
+      const savedLink = result.link;
+
+      setLinks((prev) =>
+        prev.map((link) => (link.uniqueUrl === savedLink.uniqueUrl ? savedLink : link)),
+      );
+
+      await window.api.updateLinkData(savedLink);
+
+      setIsEditModalOpen(false);
+      setSuccessTitle("수정 완료!");
+      setSuccessMessage("링크가 성공적으로 수정되었습니다.");
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error(error);
+      alert("링크 업데이트 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
-    <div className="mx-auto p-6">
-      <h1 className="mb-6 text-2xl font-bold text-gray-800">링크 관리</h1>
+    <div>
+      {deleteTarget && (
+        <DeletePrompt
+          title="링크 삭제 확인"
+          message={`"${deleteTarget.title || "제목 없음"}" 링크를 삭제하시겠습니까?`}
+          onCancel={() => setDeleteTarget(null)}
+          onDelete={handleDeleteLink}
+        />
+      )}
+      {showSuccessModal && (
+        <SuccessModal
+          successTitle={successTitle}
+          successMessage={successMessage}
+          onClose={() => setShowSuccessModal(false)}
+        />
+      )}
+      {isEditModalOpen && (
+        <EditLinkModal
+          link={editingLink}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveLink}
+        />
+      )}
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-800">
+        <TbBinaryTree2 className="mr-1 text-xl" />
+        링크 관리
+      </h1>
 
-      <section className="mb-6 rounded border border-gray-200 bg-white p-4 shadow">
-        <h2 className="mb-2 text-lg font-semibold text-gray-700">폴더 경로</h2>
-        <p className="text-sm text-gray-800">{folderPath || "선택된 폴더 없음"}</p>
+      <section className="mt-6 mb-6 rounded border border-gray-200 bg-white p-4 shadow">
+        <div className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200">
+          <div className="bg-gray-100 px-4 py-3">
+            <div className="flex justify-between gap-4 text-center">
+              <div className="flex-1 text-sm text-gray-500">링크 제목</div>
+              <div className="flex-[2] text-sm text-gray-500">주소</div>
+              <div className="flex-[2] text-sm text-gray-500">폴더</div>
+              <div className="text-sm text-gray-500">만료 기간</div>
+            </div>
+          </div>
+          {links.length === 0 && (
+            <div className="p-4 text-center text-gray-500">저장된 링크가 없습니다.</div>
+          )}
+          {links.map((link) => (
+            <div
+              key={link.uniqueUrl}
+              className="text-sm"
+            >
+              <div
+                className="group cursor-pointer rounded-lg px-4 py-3 text-center transition-colors hover:bg-gray-50"
+                onClick={() => setOpenId(openId === link.uniqueUrl ? null : link.uniqueUrl)}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1 truncate font-medium text-gray-900">
+                    {link.title || "제목 없음"}
+                  </div>
+                  <div className="flex-[2] truncate text-xs">
+                    {CLIENT_URL}/{link.uniqueUrl}
+                  </div>
+                  <div className="flex-[2] truncate text-xs text-gray-500">{link.folderPath}</div>
+                  <div className="text-xs whitespace-nowrap text-gray-500">
+                    {remainTimeFormat(link.createdAt, link.expireTime)}
+                  </div>
+                </div>
+              </div>
 
-        <h2 className="mb-2 text-lg font-semibold text-gray-700">링크 설정</h2>
-        <ul className="space-y-1 text-sm text-gray-800">
-          <li>만료 시간: {linkSettings.expireTime}분</li>
-          <li>허용 파일 형식: {linkSettings.allowedFileTypes}</li>
-          <li>최대 파일 크기: {linkSettings.maxFileSize}</li>
-          <li>자동 수락: {linkSettings.autoAccept ? "예" : "아니오"}</li>
-        </ul>
-
-        <h2 className="mb-2 text-lg font-semibold text-gray-700">보안 설정</h2>
-        <ul className="space-y-1 text-sm text-gray-800">
-          <li>전송자 이름 필수: {securitySettings.requireSenderName ? "예" : "아니오"}</li>
-          <li>비밀번호 설정됨: {securitySettings.password ? securitySettings.password : "없음"}</li>
-        </ul>
+              {openId === link.uniqueUrl && (
+                <div className="space-y-2 bg-gray-50 px-5 py-4 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <MdSubtitles />
+                      링크 제목
+                    </span>
+                    <span>{link.title}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <FaLink />
+                      링크 주소
+                    </span>
+                    <span>
+                      {CLIENT_URL}/{link.uniqueUrl}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <FaFolderOpen />
+                      저장 경로
+                    </span>
+                    <span>
+                      <p className="bg-dodger-blue-100 inline-block rounded p-2 font-mono text-xs break-all text-blue-600">
+                        {link.folderPath}
+                      </p>
+                      <button
+                        className="bg-dodger-blue-500 hover:bg-dodger-blue-600 ml-3 cursor-pointer rounded px-3 py-1 text-xs text-white"
+                        onClick={() => window.api.openFolder(link.folderPath)}
+                      >
+                        폴더 열기
+                      </button>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <MdOutlineTimelapse />
+                      남은 시간
+                    </span>
+                    <span>{remainTimeFormat(link.createdAt, link.expireTime)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <MdAccessTimeFilled />
+                      생성 시각
+                    </span>
+                    <span>{new Date(link.createdAt).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <RiLockPasswordFill />
+                      비밀번호
+                    </span>
+                    <span className={link.password ? "font-medium text-red-600" : "text-gray-600"}>
+                      {link.password ? "설정됨" : "없음"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <IoIosPerson />
+                      이름 요구
+                    </span>
+                    <span>{link.requireSenderName ? "필수" : "선택"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-1 text-gray-500">
+                      <FaFile />
+                      허용 파일
+                    </span>
+                    <span className="flex flex-wrap gap-1">
+                      {(
+                        FILE_TYPE_OPTIONS.find(
+                          (option) => option.value === link.allowedFileTypeGroup,
+                        )?.extensions || []
+                      ).map((ext) => (
+                        <span
+                          key={ext}
+                          className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                        >
+                          {ext}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="flex w-32 items-center gap-2 text-gray-500">
+                      <FaFloppyDisk />
+                      최대 크기
+                    </span>
+                    <span>{formatFileSize(link.maxFileSize)}</span>
+                  </div>
+                  <div className="flex pt-4">
+                    <button
+                      className="bg-dodger-blue-600 hover:bg-dodger-blue-700 mr-2 cursor-pointer rounded px-4 py-1.5 text-sm text-white"
+                      onClick={() => handleEditLink(link)}
+                    >
+                      설정 수정
+                    </button>
+                    <button
+                      className="cursor-pointer rounded bg-red-500 px-4 py-1.5 text-sm text-white hover:bg-red-600"
+                      onClick={() => setDeleteTarget(link)}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
