@@ -10,24 +10,35 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const setDeviceId = useDeviceStore((state) => state.setDeviceId);
 
-  const addRequest = useUploadRequestStore((state) => state.addRequest);
   const getLocalRequests = useUploadRequestStore((state) => state.getLocalRequests);
 
   useEffect(() => {
-    getLocalRequests();
-
-    window.api.onShowUploadAccept((event, data) => {
+    const handleShow = () => {
       showNotification("FlashDrop 알림", "새로운 파일이 도착했습니다.", () => {
         navigate("/fileRequest");
       });
-      addRequest(data);
-    });
-    window.api.onAutoAcceptUpload((event, data) => {
+    };
+
+    const handleAuto = (event, data) => {
       showNotification("다운로드 진행중", `${data.filename}을 다운로드 중입니다.`, () => {
         navigate("/fileRequest");
       });
-    });
-  }, [addRequest, getLocalRequests, navigate]);
+    };
+
+    getLocalRequests();
+
+    window.api.onShowUploadAccept(handleShow);
+    window.api.onAutoAcceptUpload(handleAuto);
+
+    return () => {
+      if (window.api.offShowUploadAccept) {
+        window.api.offShowUploadAccept(handleShow);
+      }
+      if (window.api.offAutoAcceptUpload) {
+        window.api.offAutoAcceptUpload(handleAuto);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     window.api.getDeviceId().then((id) => {
